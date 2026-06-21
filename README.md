@@ -6,7 +6,7 @@ Monorepo for a connected race-car telemetry system. It has three components:
 | --- | --- | --- |
 | [`racecar_firmware/`](racecar_firmware) | PlatformIO / C++ | Embedded firmware running on the on-car microcontroller. Publishes telemetry over MQTT. |
 | [`gateway/`](gateway) | Docker Compose | Edge gateway stack: Mosquitto (MQTT broker), Node-RED (flow logic), InfluxDB (time-series storage) and Grafana (dashboards). |
-| [`racecar_app/`](racecar_app) | Flutter | Cross-platform app that subscribes to telemetry and presents live data to the user. |
+| [`racecar_app/`](racecar_app) | Flutter | Cross-platform app to control the cars and start a race. |
 
 ## Architecture
 
