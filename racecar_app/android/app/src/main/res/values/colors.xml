@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_background">#FFFFFF</color>
+    <!-- Native launch screen: matches the app's hero-gradient splash so the
+         OS launch screen blends into the in-app animated splash. -->
+    <color name="splash_background">#FF6F7CF6</color>
+</resources>

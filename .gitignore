@@ -1,0 +1,57 @@
+# ============================================================
+#  Race Car project — root .gitignore
+# ============================================================
+
+# ---------- Flutter / Dart (racecar_app) ----------
+racecar_app/build/
+racecar_app/.dart_tool/
+racecar_app/.flutter-plugins-dependencies
+racecar_app/.metadata
+racecar_app/.idea/
+racecar_app/lib.zip
+**/build/
+**/.dart_tool/
+
+# ---------- PlatformIO / firmware (racecar_firmware) ----------
+racecar_firmware/.pio/
+racecar_firmware/.vscode/
+
+# ---------- Node ----------
+**/node_modules/
+**/.npm/
+
+# ============================================================
+#  Gateway: runtime data & SECRETS — do NOT publish
+# ============================================================
+
+# InfluxDB runtime data + API token (TOKEN.txt)
+gateway/influxdb/
+
+# Grafana runtime DB, downloaded plugins, exports
+gateway/grafana/grafana.db
+gateway/grafana/plugins/
+gateway/grafana/csv/
+gateway/grafana/pdf/
+gateway/grafana/png/
+gateway/grafana/unified-search/
+
+# Mosquitto runtime data & logs
+gateway/mosquitto/data/
+gateway/mosquitto/log/
+
+# Node-RED runtime state, credentials & deps
+gateway/nodered/node_modules/
+gateway/nodered/.npm/
+gateway/nodered/.config.*
+gateway/nodered/flows_cred.json
+gateway/nodered/*.backup
+
+# ============================================================
+#  OS / editor junk
+# ============================================================
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.tmp
+.claude/

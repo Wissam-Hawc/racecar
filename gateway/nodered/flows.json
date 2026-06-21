@@ -1,0 +1,240 @@
+[
+    {
+        "id": "5042e23507c6e7ce",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "82cafaa4f46950e5",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "car-mosquitto",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "239aa8f4923479c0",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": 8086,
+        "protocol": "http",
+        "database": "database",
+        "name": "",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://car-influxdb:8086",
+        "timeout": 10,
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "8039cfca428edcc5",
+        "type": "mqtt in",
+        "z": "5042e23507c6e7ce",
+        "name": "cars telemetry",
+        "topic": "cars/+/telemetry",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "82cafaa4f46950e5",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 110,
+        "y": 260,
+        "wires": [
+            [
+                "abdcb2a645ba24e0"
+            ]
+        ]
+    },
+    {
+        "id": "abdcb2a645ba24e0",
+        "type": "json",
+        "z": "5042e23507c6e7ce",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 270,
+        "y": 320,
+        "wires": [
+            [
+                "237ed80f86a7aede"
+            ]
+        ]
+    },
+    {
+        "id": "82a525c8a5364d36",
+        "type": "influxdb out",
+        "z": "5042e23507c6e7ce",
+        "influxdb": "239aa8f4923479c0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "lu",
+        "bucket": "race_cars",
+        "x": 740,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "4f95f5c15ea57a64",
+        "type": "debug",
+        "z": "5042e23507c6e7ce",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "237ed80f86a7aede",
+        "type": "function",
+        "z": "5042e23507c6e7ce",
+        "name": "function 1",
+        "func": "\nlet data = msg.payload;\n\nif(!data || !data.car){\n    node.warn(\"INvalide telemetry playload\");\n    return null;\n}\n\n// Example topic: cars/abd/telemetry\nlet parts = msg.topic.split(\"/\");\nlet topicCarId = parts[1] || \"unknown\";\n\nmsg.measurement = \"car_telemetry\";\n\nmsg.payload = [\n    {\n        distance_cm: Number(data.distance_cm || 0),//ultrasonic obstacle distance\n        rssi: Number(data.rssi || 0),//Wi-Fi signal strength\n        odometer_m: Number(data.odometer_m || 0),//estimated distance travelled\n        moving: data.moving === true ? 1 : 0, //wheels moving or not\n        mode_num: data.mode === \"auto\" ? 1 : 0\n\n    },\n    {\n        car: data.car || topicCarId,  //Which car sent the data\n        mode: data.mode || \"unknown\" //manual or auto\n    }\n];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 360,
+        "wires": [
+            [
+                "82a525c8a5364d36",
+                "4f95f5c15ea57a64"
+            ]
+        ]
+    },
+    {
+        "id": "2aecf49d4943f521",
+        "type": "mqtt in",
+        "z": "5042e23507c6e7ce",
+        "name": "",
+        "topic": "race/result",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "82cafaa4f46950e5",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 580,
+        "wires": [
+            [
+                "bf0ab6b2f0c0ab7d"
+            ]
+        ]
+    },
+    {
+        "id": "bf0ab6b2f0c0ab7d",
+        "type": "json",
+        "z": "5042e23507c6e7ce",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 310,
+        "y": 600,
+        "wires": [
+            [
+                "c39f7a9ead64f0e7"
+            ]
+        ]
+    },
+    {
+        "id": "c39f7a9ead64f0e7",
+        "type": "function",
+        "z": "5042e23507c6e7ce",
+        "name": "function 2",
+        "func": "let p = msg.payload;\n\nif (!p || p.time === undefined || !p.playerName) {\n    node.warn(\"Invalid race result payload\");\n    return null;\n}\n\nmsg.measurement = \"race_result\";\n\nmsg.payload = [\n    {\n        race_time: Number(p.time)\n    },\n    {\n        playerName: String(p.playerName),\n        playerColor: String(p.playerColor || \"unknown\")\n    }\n];\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 600,
+        "wires": [
+            [
+                "4ac704eee1069c09",
+                "58747972c00461ce"
+            ]
+        ]
+    },
+    {
+        "id": "4ac704eee1069c09",
+        "type": "debug",
+        "z": "5042e23507c6e7ce",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "58747972c00461ce",
+        "type": "influxdb out",
+        "z": "5042e23507c6e7ce",
+        "influxdb": "239aa8f4923479c0",
+        "name": "",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "lu",
+        "bucket": "race_cars",
+        "x": 720,
+        "y": 580,
+        "wires": []
+    }
+]
